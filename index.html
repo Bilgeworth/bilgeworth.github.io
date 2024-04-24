@@ -1,1 +1,47 @@
-hello World
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Backend IP Display</title>
+    <script>
+        // Function to fetch and display the stored backend IP
+        async function displayBackendIP() {
+            try {
+                const response = await fetch('backend_ip.txt');
+                const backendIP = await response.text();
+                document.getElementById('backendIP').textContent = backendIP.slice(-3);
+            } catch (error) {
+                console.error('Error fetching backend IP:', error);
+            }
+        }
+
+        // Function to update the backend IP
+        async function updateBackendIP(ipAddress) {
+            try {
+                const response = await fetch('update_ip.js', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ ip: ipAddress, secret_key: 'your-secret-key' })
+                });
+
+                if (response.ok) {
+                    console.log('Backend IP updated successfully.');
+                    displayBackendIP();
+                } else {
+                    console.error('Failed to update backend IP.');
+                }
+            } catch (error) {
+                console.error('Error updating backend IP:', error);
+            }
+        }
+
+        // Call the displayBackendIP function when the page loads
+        window.addEventListener('DOMContentLoaded', displayBackendIP);
+    </script>
+</head>
+<body>
+    <h1>Last 3 Digits of Backend IP:</h1>
+    <p id="backendIP"></p>
+</body>
+</html>
